@@ -9,13 +9,28 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const noButtonRef = useRef<HTMLButtonElement>(null);
   const [yesClicked, setYesClicked] = useState(false);
+  const [noAttempts, setNoAttempts] = useState(0);
 
   const handleNoHover = () => {
     if (noButtonRef.current) {
       const randomX = Math.random() * 300 - 150;
       const randomY = Math.random() * 300 - 150;
       setNoButtonPos({ x: randomX, y: randomY });
+      setNoAttempts((s) => s + 1);
     }
+  };
+
+  // Returns placeholder labels depending on how many times user attempted "No"
+  const getNoLabel = () => {
+    if (noAttempts >= 24) return 'nigger';
+    if (noAttempts >= 21) return 'k whatever bye.';
+    if (noAttempts >= 18) return 'at this point whyd i even ask';
+    if (noAttempts >= 15) return 'aii fuck you.';
+    if (noAttempts >= 12) return 'SO YOU WANT ME TO KMS???';
+    if (noAttempts >= 9) return 'AII BRO WHY U TRYING SO HARD????';
+    if (noAttempts >= 6) return 'bro deadas????';
+    if (noAttempts >= 3) return 'tf you doing???';
+    return 'No 🤨';
   };
 
   const handleYesClick = () => {
@@ -65,7 +80,7 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
               transform: `translate(${noButtonPos.x}px, ${noButtonPos.y}px)`,
             }}
           >
-            No 🤨
+            {getNoLabel()}
           </button>
         </div>
 

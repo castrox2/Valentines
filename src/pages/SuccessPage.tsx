@@ -45,10 +45,6 @@ const SuccessPage: React.FC<SuccessPageProps> = ({ onReset }) => {
           <span className="decorative-heart">❤️</span>
           <span className="decorative-heart">💕</span>
         </div>
-
-        <button className="btn-reset" onClick={onReset}>
-          Ask Again 😊
-        </button>
       </div>
     </div>
   );

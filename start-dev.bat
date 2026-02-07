@@ -1,0 +1,9 @@
+@echo off
+echo Starting Valentine's Day App...
+echo.
+echo Installing dependencies (if needed)...
+call npm install --legacy-peer-deps
+echo.
+echo Starting development server and Electron app...
+call npm start
+pause

@@ -53,7 +53,7 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
             className={`btn btn-yes ${yesClicked ? 'clicked' : ''}`}
             onClick={handleYesClick}
           >
-            Yes 💜
+            Yes DUHH💜
           </button>
 
           <button

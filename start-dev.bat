@@ -1,6 +1,6 @@
+@echo off
 echo.
 echo Starting development server and Electron app...
-@echo off
 setlocal
 echo Starting Valentine's Day App...
 echo.
@@ -62,4 +62,6 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo Starting development server and Electron app...
 call npm start
+echo.
+pause
 endlocal

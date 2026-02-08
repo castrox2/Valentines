@@ -1,44 +1,62 @@
 @echo off
+setlocal
 echo Building Valentine's Day App (.exe)...
 echo.
 
-REM Check if npm is installed
+REM Detect npm
 where npm >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
-    echo npm is not installed. Installing Node.js...
-    echo.
-    
-    REM Try using winget (Windows 10+)
+    echo npm not found. Attempting to install Node.js.
+
     where winget >nul 2>nul
     if %ERRORLEVEL% EQU 0 (
-        echo Using Windows Package Manager to install Node.js...
+        echo Installing Node.js via winget (may prompt for permissions)...
         winget install OpenJS.NodeJS -e --accept-source-agreements --accept-package-agreements
+        set "INSTALL_EXIT=%ERRORLEVEL%"
     ) else (
-        echo Downloading and installing Node.js...
-        REM Download Node.js LTS installer
-        powershell -Command "[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://nodejs.org/dist/v20.10.0/node-v20.10.0-x64.msi', '%TEMP%\node-installer.msi')"
-        
-        REM Run the installer
-        msiexec /i "%TEMP%\node-installer.msi" /quiet /norestart
-        echo.
-        echo Node.js installation started. Please wait...
-        timeout /t 10 /nobreak
-        
-        REM Clean up installer
-        del "%TEMP%\node-installer.msi" >nul 2>nul
+        echo winget not available; downloading Node.js installer...
+        powershell -Command "[Net.ServicePointManager]::SecurityProtocol = 'Tls12'; (New-Object System.Net.WebClient).DownloadFile('https://nodejs.org/dist/v20.10.0/node-v20.10.0-x64.msi', '%TEMP%\\node-installer.msi')"
+        if exist "%TEMP%\node-installer.msi" (
+            msiexec /i "%TEMP%\node-installer.msi" /qn /norestart
+            set "INSTALL_EXIT=%ERRORLEVEL%"
+            del "%TEMP%\node-installer.msi" >nul 2>nul
+        ) else (
+            echo Failed to download Node installer.
+            pause
+            exit /b 1
+        )
     )
-    
-    REM Refresh environment variables
-    setlocal enabledelayedexpansion
-    for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PATH') do set "PATH=%%B"
-    for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v PATH') do set "PATH=%%A;!PATH!"
+
+    if "%INSTALL_EXIT%"=="" set "INSTALL_EXIT=0"
+    if %INSTALL_EXIT% NEQ 0 (
+        echo Node.js installation failed (exit code %INSTALL_EXIT%). Press any key to exit.
+        pause
+        exit /b %INSTALL_EXIT%
+    )
+
+    REM Add common Node install paths to PATH for this session
+    if exist "C:\Program Files\nodejs\node.exe" (
+        set "PATH=C:\Program Files\nodejs;%PATH%"
+    ) else if exist "C:\Program Files (x86)\nodejs\node.exe" (
+        set "PATH=C:\Program Files (x86)\nodejs;%PATH%"
+    )
+
+    echo Node.js installed. Restarting script to pick up new PATH...
     echo.
-    echo Node.js installation complete. Retrying build...
-    echo.
+    cmd /C "%~f0" %*
+    exit /b
 )
 
 echo This may take a few minutes...
 call npm run build
+if %ERRORLEVEL% NEQ 0 (
+    echo "npm run build" failed with exit code %ERRORLEVEL%.
+    echo Please check the output above. Press any key to exit.
+    pause
+    exit /b %ERRORLEVEL%
+)
+
 echo.
 echo Build complete! Your .exe installers are in the 'dist' folder
 pause
+endlocal

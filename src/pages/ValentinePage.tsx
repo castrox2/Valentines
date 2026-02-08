@@ -22,6 +22,14 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
 
   // Returns placeholder labels depending on how many times user attempted "No"
   const getNoLabel = () => {
+    if (noAttempts >= 48) return 'kys.';
+    if (noAttempts >= 45) return 'aii bruh last one fuck u';
+    if (noAttempts >= 42) return 'ur at 42 fucking tries bro';
+    if (noAttempts >= 39) return '...';
+    if (noAttempts >= 36) return 'atp just tell me you dont want me bruh';
+    if (noAttempts >= 33) return 'it aint even funny no more';
+    if (noAttempts >= 30) return 'im like lowk running out of shit to say';
+    if (noAttempts >= 27) return 'aii bro stop deadass';
     if (noAttempts >= 24) return 'nigger';
     if (noAttempts >= 21) return 'k whatever bye.';
     if (noAttempts >= 18) return 'at this point whyd i even ask';

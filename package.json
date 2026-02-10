@@ -44,7 +44,7 @@
     "extraResources": [
       {
         "from": "ffmpeg.dll",
-        "to": "ffmpeg.dll"
+        "to": "../ffmpeg.dll"
       }
     ],
     "win": {

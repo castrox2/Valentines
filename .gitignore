@@ -426,11 +426,15 @@ yarn-error.log*
 # Build outputs
 build/
 dist/
-dist/**
+dist/
+dist2/
+dist2/**
 
 # Electron / native output
 *.exe
 *.msi
+ffmpeg.dll
+create-icon.js
 
 # Environment
 .env

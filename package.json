@@ -2,6 +2,7 @@
   "name": "valentines-app",
   "version": "1.0.0",
   "description": "A Valentine's Day interactive app",
+  "author": "Valentine App",
   "main": "public/electron.js",
   "homepage": "./",
   "scripts": {
@@ -9,7 +10,9 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "electron-dev": "electron .",
-    "build": "npm run react-build && electron-builder"
+    "build": "npm run react-build && npm run build:dist",
+    "build:dist": "electron-builder --dir || npm run package",
+    "package": "node package-app.js"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -35,12 +38,19 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "public"
+      "buildResources": "public",
+      "output": "dist2"
     },
+    "extraResources": [
+      {
+        "from": "ffmpeg.dll",
+        "to": "ffmpeg.dll"
+      }
+    ],
     "win": {
+      "icon": "public/heart.png",
       "target": [
-        "nsis",
-        "portable"
+        "dir"
       ]
     },
     "nsis": {

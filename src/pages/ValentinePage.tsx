@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import './ValentinePage.css';
 
 interface ValentinePageProps {
@@ -7,17 +7,14 @@ interface ValentinePageProps {
 
 const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
-  const noButtonRef = useRef<HTMLButtonElement>(null);
   const [yesClicked, setYesClicked] = useState(false);
   const [noAttempts, setNoAttempts] = useState(0);
 
   const handleNoHover = () => {
-    if (noButtonRef.current) {
-      const randomX = Math.random() * 300 - 150;
-      const randomY = Math.random() * 300 - 150;
-      setNoButtonPos({ x: randomX, y: randomY });
-      setNoAttempts((s) => s + 1);
-    }
+    const randomX = Math.random() * 300 - 150;
+    const randomY = Math.random() * 300 - 150;
+    setNoButtonPos({ x: randomX, y: randomY });
+    setNoAttempts((s) => s + 1);
   };
 
   // Returns placeholder labels depending on how many times user attempted "No"
@@ -80,7 +77,6 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes }) => {
           </button>
 
           <button
-            ref={noButtonRef}
             className="btn btn-no"
             onMouseEnter={handleNoHover}
             onClick={handleNoHover}

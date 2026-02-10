@@ -1,11 +1,7 @@
 import React from 'react';
 import './SuccessPage.css';
 
-interface SuccessPageProps {
-  onReset: () => void;
-}
-
-const SuccessPage: React.FC<SuccessPageProps> = ({ onReset }) => {
+const SuccessPage: React.FC = () => {
   return (
     <div className="success-container">
       <div className="floating-hearts">

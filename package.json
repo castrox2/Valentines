@@ -10,9 +10,8 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "electron-dev": "electron .",
-    "build": "npm run react-build && npm run build:dist",
-    "build:dist": "electron-builder --dir || npm run package",
-    "package": "node package-app.js"
+    "build": "npm run react-build && electron-builder",
+    "build:unpacked": "npm run react-build && electron-builder --win dir"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -34,23 +33,19 @@
     "productName": "Valentine's App",
     "files": [
       "build/**/*",
-      "public/**/*",
-      "node_modules/**/*"
+      "public/electron.js",
+      "public/preload.js",
+      "package.json"
     ],
     "directories": {
       "buildResources": "public",
-      "output": "dist2"
+      "output": "release"
     },
-    "extraResources": [
-      {
-        "from": "ffmpeg.dll",
-        "to": "../ffmpeg.dll"
-      }
-    ],
     "win": {
-      "icon": "public/heart.png",
+      "signAndEditExecutable": false,
       "target": [
-        "dir"
+        "nsis",
+        "portable"
       ]
     },
     "nsis": {

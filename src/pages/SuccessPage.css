@@ -163,31 +163,6 @@
   animation-delay: 0.4s;
 }
 
-.btn-reset {
-  padding: 1rem 2.5rem;
-  font-size: 1.3rem;
-  background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
-  transition: all 0.3s ease;
-  animation: fadeIn 1.4s ease-out 0.8s both;
-}
-
-.btn-reset:hover {
-  transform: scale(1.1);
-  box-shadow: 0 12px 35px rgba(255, 20, 147, 0.7);
-}
-
-.btn-reset:active {
-  transform: scale(0.98);
-}
-
 @media (max-width: 768px) {
   .success-title {
     font-size: 3rem;

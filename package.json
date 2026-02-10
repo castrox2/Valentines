@@ -9,8 +9,7 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "electron-dev": "electron .",
-    "electron-build": "npm run react-build && electron-builder",
-    "build": "npm run react-build && npm run electron-build"
+    "build": "npm run react-build && electron-builder"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -31,7 +30,7 @@
     "appId": "com.valentines.app",
     "productName": "Valentine's App",
     "files": [
-      "dist/**/*",
+      "build/**/*",
       "public/**/*",
       "node_modules/**/*"
     ],

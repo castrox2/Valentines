@@ -1,4 +1,4 @@
-# Valentine's?
+﻿# Valentine's?
 
 Desktop Valentine app built with Electron + React + TypeScript.
 
@@ -6,18 +6,23 @@ The app supports two first-launch flows:
 - `Send`: customize the Valentine experience (no-button labels, success text), then share/export it.
 - `Received`: import a shared code and open the configured experience.
 
-## For Download-and-Run Users
+## For "Download-and-Run" Users
 
 1. Go to this repo's **Releases** page on GitHub.
 2. Download one of these files from the latest release:
    - `Valentine's Setup <version>.exe` (recommended)
    - `Valentine's <version>.exe` (portable, no install)
 3. Run the file you downloaded.
-4. On first launch, choose `Send` or `Received`.
+4. On first launch, choose `Send` (If you intend to send it to someone) or `Received` (If you are receiving from someone).
 
 Recommended distribution method:
 - Use GitHub Releases as the canonical download source.
 - Share only the release link (not random copied `.exe` files from other folders).
+
+## Releases Link
+
+Direct download page:
+- https://github.com/castrox2/Valentines/releases
 
 ## For Developers
 

@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import {
+  DEFAULT_APP_CONFIG,
+  ValentineAppConfig,
+  loadSavedConfig,
+  saveConfig,
+} from './config/appConfig';
+import SetupPage from './pages/SetupPage';
 import ValentinePage from './pages/ValentinePage';
 import SuccessPage from './pages/SuccessPage';
 
+type AppPage = 'setup' | 'valentine' | 'success';
+
 const App: React.FC = () => {
-  const [page, setPage] = useState<'valentine' | 'success'>('valentine');
+  const initialSavedConfig = useMemo(() => loadSavedConfig(), []);
+
+  const [config, setConfig] = useState<ValentineAppConfig>(
+    initialSavedConfig ?? DEFAULT_APP_CONFIG
+  );
+  const [page, setPage] = useState<AppPage>(initialSavedConfig ? 'valentine' : 'setup');
+  const [isFirstLaunch, setIsFirstLaunch] = useState(!initialSavedConfig);
+
+  const handleSaveCustomization = (nextConfig: ValentineAppConfig) => {
+    const normalizedConfig = saveConfig(nextConfig);
+    setConfig(normalizedConfig);
+    setPage('valentine');
+    setIsFirstLaunch(false);
+  };
 
   const handleYes = () => {
     setPage('success');
@@ -11,8 +33,27 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      {page === 'valentine' && <ValentinePage onYes={handleYes} />}
-      {page === 'success' && <SuccessPage />}
+      {page === 'setup' && (
+        <SetupPage
+          initialConfig={config}
+          isFirstLaunch={isFirstLaunch}
+          onSave={handleSaveCustomization}
+        />
+      )}
+      {page === 'valentine' && (
+        <ValentinePage
+          onYes={handleYes}
+          maxNoAttempts={config.maxNoAttempts}
+          noLabels={config.noLabels}
+        />
+      )}
+      {page === 'success' && (
+        <SuccessPage
+          successTitle={config.successTitle}
+          successMessage={config.successMessage}
+          successPlaceholderText={config.successPlaceholderText}
+        />
+      )}
     </div>
   );
 };

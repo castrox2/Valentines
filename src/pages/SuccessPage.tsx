@@ -1,7 +1,17 @@
 import React from 'react';
 import './SuccessPage.css';
 
-const SuccessPage: React.FC = () => {
+interface SuccessPageProps {
+  successTitle: string;
+  successMessage: string;
+  successPlaceholderText: string;
+}
+
+const SuccessPage: React.FC<SuccessPageProps> = ({
+  successTitle,
+  successMessage,
+  successPlaceholderText,
+}) => {
   return (
     <div className="success-container">
       <div className="floating-hearts">
@@ -16,7 +26,7 @@ const SuccessPage: React.FC = () => {
               fontSize: `${1 + Math.random() * 1.5}rem`,
             }}
           >
-            ❤️
+            {'\u2764\uFE0F'}
           </div>
         ))}
       </div>
@@ -28,18 +38,15 @@ const SuccessPage: React.FC = () => {
       </div>
 
       <div className="success-content">
-        <div className="celebration-hearts">🎉💖🎉</div>
-        <h1 className="success-title">MMMMMMM TYPE SHIIIITTTTT 💕</h1>
-        <p className="success-message">Glad you're back safe tho 💕</p>
-        <p className="placeholder-text">
-          Anyways I got my gifts lined up for valentines so thats why you didn't get shit but mogu mogu and stuff hehehehe so just wait, 
-          I love you lil nigga💖💕💜❤️
-        </p>
+        <div className="celebration-hearts">{'\uD83C\uDF89\uD83D\uDC96\uD83C\uDF89'}</div>
+        <h1 className="success-title">{successTitle}</h1>
+        <p className="success-message">{successMessage}</p>
+        <p className="placeholder-text">{successPlaceholderText}</p>
 
         <div className="heart-group">
-          <span className="decorative-heart">💜</span>
-          <span className="decorative-heart">❤️</span>
-          <span className="decorative-heart">💕</span>
+          <span className="decorative-heart">{'\uD83D\uDC98'}</span>
+          <span className="decorative-heart">{'\u2764\uFE0F'}</span>
+          <span className="decorative-heart">{'\uD83D\uDC95'}</span>
         </div>
       </div>
     </div>

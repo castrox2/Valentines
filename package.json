@@ -30,7 +30,7 @@
   },
   "build": {
     "appId": "com.valentines.app",
-    "productName": "Valentine's App",
+    "productName": "Valentine's?",
     "files": [
       "build/**/*",
       "public/electron.js",

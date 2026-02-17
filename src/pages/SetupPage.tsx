@@ -23,6 +23,8 @@ type SetupStatus = {
   message: string;
 };
 
+type SetupMode = 'chooser' | 'send' | 'received';
+
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
     if (navigator.clipboard?.writeText) {
@@ -57,10 +59,17 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
   );
   const [importCode, setImportCode] = useState('');
   const [status, setStatus] = useState<SetupStatus | null>(null);
+  const [setupMode, setSetupMode] = useState<SetupMode>(() => (isFirstLaunch ? 'chooser' : 'send'));
 
   useEffect(() => {
     setDraftConfig(normalizeConfig(initialConfig));
   }, [initialConfig]);
+
+  useEffect(() => {
+    setSetupMode(isFirstLaunch ? 'chooser' : 'send');
+    setStatus(null);
+    setImportCode('');
+  }, [isFirstLaunch]);
 
   const shareCode = useMemo(() => createShareCode(draftConfig), [draftConfig]);
   const sendMessage = useMemo(
@@ -87,6 +96,11 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
       }),
     [draftConfig.maxNoAttempts, draftConfig.noLabels]
   );
+
+  const switchMode = (nextMode: SetupMode) => {
+    setStatus(null);
+    setSetupMode(nextMode);
+  };
 
   const updateNoLabel = (index: number, value: string) => {
     setDraftConfig((previous) => {
@@ -126,15 +140,29 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
     }
   };
 
-  const handleImportShareCode = () => {
+  const handleExportConfig = () => {
+    const normalized = normalizeConfig(draftConfig);
+    const jsonText = JSON.stringify(normalized, null, 2);
+    const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'valentines-config.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    setStatus({ type: 'success', message: 'Configuration exported as JSON.' });
+  };
+
+  const handleImportAndStart = () => {
     const importedConfig = parseShareCode(importCode);
     if (!importedConfig) {
       setStatus({ type: 'error', message: 'Invalid share code. Paste a valid code and try again.' });
       return;
     }
 
-    setDraftConfig(importedConfig);
-    setStatus({ type: 'success', message: 'Share code imported successfully.' });
+    onSave(importedConfig);
   };
 
   const handleSave = () => {
@@ -143,14 +171,79 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
     setStatus({ type: 'success', message: 'Customization saved.' });
   };
 
+  if (setupMode === 'chooser') {
+    return (
+      <div className="setup-container">
+        <div className="setup-mode-card">
+          <h1 className="setup-title">How Are You Using This?</h1>
+          <p className="setup-subtitle">Choose one option to continue.</p>
+
+          <div className="setup-option-grid">
+            <button className="setup-option-button" type="button" onClick={() => switchMode('send')}>
+              Send
+            </button>
+            <button className="setup-option-button" type="button" onClick={() => switchMode('received')}>
+              Received
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (setupMode === 'received') {
+    return (
+      <div className="setup-container">
+        <div className="setup-mode-card setup-mode-card-narrow">
+          <h1 className="setup-title">Import Received Code</h1>
+          <p className="setup-subtitle">Paste the code you were sent, then continue.</p>
+
+          <label className="setup-label" htmlFor="receivedImportCode">
+            Share Code
+          </label>
+          <textarea
+            id="receivedImportCode"
+            className="setup-textarea setup-mono"
+            value={importCode}
+            onChange={(event) => setImportCode(event.target.value)}
+            placeholder="Paste received share code"
+          />
+
+          {status && (
+            <p className={`setup-status setup-status-${status.type}`} role="status">
+              {status.message}
+            </p>
+          )}
+
+          <div className="setup-actions">
+            <button className="setup-button" type="button" onClick={handleImportAndStart}>
+              Import and Start
+            </button>
+            {isFirstLaunch && (
+              <button className="setup-button" type="button" onClick={() => switchMode('chooser')}>
+                Back
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="setup-container">
       <div className="setup-layout">
         <div className="setup-customization-panel">
+          {isFirstLaunch && (
+            <div className="setup-mode-nav">
+              <button className="setup-button" type="button" onClick={() => switchMode('chooser')}>
+                Back to Options
+              </button>
+            </div>
+          )}
+
           <h1 className="setup-title">Customize Before You Send</h1>
-          <p className="setup-subtitle">
-            Configure your no-button behavior and success page text.
-          </p>
+          <p className="setup-subtitle">Configure your no-button behavior and success page text.</p>
 
           <div className="setup-grid">
             <section className="setup-section setup-section-scroll">
@@ -246,7 +339,7 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
           <section className="setup-section setup-share-section">
             <h2 className="setup-section-title">Save and Share</h2>
             <p className="setup-hint setup-send-hint">
-              Copy one message and send it. Receiver can import the code here.
+              Copy one message, copy the code, or export a JSON file.
             </p>
 
             <div className="setup-actions">
@@ -256,22 +349,15 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
               <button className="setup-button" type="button" onClick={handleCopyShareCode}>
                 Copy Share Code
               </button>
+              <button className="setup-button" type="button" onClick={handleExportConfig}>
+                Export JSON
+              </button>
             </div>
 
-            <label className="setup-label" htmlFor="importCode">
-              Import Share Code
+            <label className="setup-label" htmlFor="sendShareCode">
+              Share Code
             </label>
-            <textarea
-              id="importCode"
-              className="setup-textarea setup-mono"
-              value={importCode}
-              onChange={(event) => setImportCode(event.target.value)}
-              placeholder="Paste a received share code here"
-            />
-
-            <button className="setup-button" type="button" onClick={handleImportShareCode}>
-              Import Code
-            </button>
+            <textarea id="sendShareCode" className="setup-textarea setup-mono" value={shareCode} readOnly />
           </section>
         </aside>
       </div>

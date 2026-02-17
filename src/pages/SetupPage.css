@@ -55,6 +55,11 @@
   font-size: 0.9rem;
 }
 
+.setup-send-hint {
+  margin-top: 0;
+  margin-bottom: 0.85rem;
+}
+
 .setup-input,
 .setup-textarea {
   width: 100%;

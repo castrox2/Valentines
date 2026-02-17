@@ -31,6 +31,10 @@ const App: React.FC = () => {
     setPage('success');
   };
 
+  const handleOpenCustomization = () => {
+    setPage('setup');
+  };
+
   return (
     <div className="app">
       {page === 'setup' && (
@@ -43,6 +47,7 @@ const App: React.FC = () => {
       {page === 'valentine' && (
         <ValentinePage
           onYes={handleYes}
+          onOpenCustomization={handleOpenCustomization}
           maxNoAttempts={config.maxNoAttempts}
           noLabels={config.noLabels}
         />

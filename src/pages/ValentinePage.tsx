@@ -4,11 +4,17 @@ import './ValentinePage.css';
 
 interface ValentinePageProps {
   onYes: () => void;
+  onOpenCustomization: () => void;
   maxNoAttempts: number;
   noLabels: string[];
 }
 
-const ValentinePage: React.FC<ValentinePageProps> = ({ onYes, maxNoAttempts, noLabels }) => {
+const ValentinePage: React.FC<ValentinePageProps> = ({
+  onYes,
+  onOpenCustomization,
+  maxNoAttempts,
+  noLabels,
+}) => {
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
   const [yesClicked, setYesClicked] = useState(false);
   const [noAttempts, setNoAttempts] = useState(0);
@@ -38,6 +44,10 @@ const ValentinePage: React.FC<ValentinePageProps> = ({ onYes, maxNoAttempts, noL
 
   return (
     <div className="valentine-container">
+      <button className="reopen-setup-button" type="button" onClick={onOpenCustomization}>
+        Re-open Customization
+      </button>
+
       <div className="floating-hearts">
         {[...Array(5)].map((_, i) => (
           <div

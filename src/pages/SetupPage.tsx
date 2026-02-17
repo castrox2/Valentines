@@ -23,6 +23,28 @@ type SetupStatus = {
   message: string;
 };
 
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+
+    const temporaryField = document.createElement('textarea');
+    temporaryField.value = text;
+    temporaryField.style.position = 'fixed';
+    temporaryField.style.left = '-9999px';
+    document.body.appendChild(temporaryField);
+    temporaryField.focus();
+    temporaryField.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(temporaryField);
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
 function getAttemptRangeLabel(index: number, maxNoAttempts: number): string {
   const start = index * NO_LABEL_STEP;
   const end = Math.min(start + (NO_LABEL_STEP - 1), maxNoAttempts);
@@ -41,6 +63,16 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
   }, [initialConfig]);
 
   const shareCode = useMemo(() => createShareCode(draftConfig), [draftConfig]);
+  const sendMessage = useMemo(
+    () =>
+      [
+        'Use this Valentine setup code:',
+        shareCode,
+        '',
+        'Open the app, click "Re-open Customization", paste the code, and click "Import Code".',
+      ].join('\n'),
+    [shareCode]
+  );
 
   const noLabelRows = useMemo(
     () =>
@@ -73,46 +105,21 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
   };
 
   const handleCopyShareCode = async () => {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(shareCode);
-        setStatus({ type: 'success', message: 'Share code copied to clipboard.' });
-        return;
-      }
-
-      const temporaryField = document.createElement('textarea');
-      temporaryField.value = shareCode;
-      temporaryField.style.position = 'fixed';
-      temporaryField.style.left = '-9999px';
-      document.body.appendChild(temporaryField);
-      temporaryField.focus();
-      temporaryField.select();
-      const copied = document.execCommand('copy');
-      document.body.removeChild(temporaryField);
-
-      if (copied) {
-        setStatus({ type: 'success', message: 'Share code copied to clipboard.' });
-      } else {
-        setStatus({ type: 'error', message: 'Clipboard copy failed. Copy from the box manually.' });
-      }
-    } catch {
+    const copied = await copyToClipboard(shareCode);
+    if (copied) {
+      setStatus({ type: 'success', message: 'Share code copied to clipboard.' });
+    } else {
       setStatus({ type: 'error', message: 'Clipboard copy failed. Copy from the box manually.' });
     }
   };
 
-  const handleExportJson = () => {
-    const normalized = normalizeConfig(draftConfig);
-    const jsonText = JSON.stringify(normalized, null, 2);
-    const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'valentines-config.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-    setStatus({ type: 'success', message: 'Configuration exported as JSON.' });
+  const handleCopySendMessage = async () => {
+    const copied = await copyToClipboard(sendMessage);
+    if (copied) {
+      setStatus({ type: 'success', message: 'Ready-to-send message copied to clipboard.' });
+    } else {
+      setStatus({ type: 'error', message: 'Clipboard copy failed. Try copying the share code only.' });
+    }
   };
 
   const handleImportShareCode = () => {
@@ -226,17 +233,16 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
 
         <section className="setup-section">
           <h2 className="setup-section-title">Save and Share</h2>
-          <label className="setup-label" htmlFor="shareCode">
-            Share Code
-          </label>
-          <textarea id="shareCode" className="setup-textarea setup-mono" readOnly value={shareCode} />
-
+          <p className="setup-hint setup-send-hint">
+            Keep it simple: copy one message and send it. The receiver can import the code in this same
+            screen.
+          </p>
           <div className="setup-actions">
+            <button className="setup-button" type="button" onClick={handleCopySendMessage}>
+              Copy Send Message
+            </button>
             <button className="setup-button" type="button" onClick={handleCopyShareCode}>
               Copy Share Code
-            </button>
-            <button className="setup-button" type="button" onClick={handleExportJson}>
-              Export JSON
             </button>
           </div>
 

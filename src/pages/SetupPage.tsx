@@ -59,14 +59,14 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
   );
   const [importCode, setImportCode] = useState('');
   const [status, setStatus] = useState<SetupStatus | null>(null);
-  const [setupMode, setSetupMode] = useState<SetupMode>(() => (isFirstLaunch ? 'chooser' : 'send'));
+  const [setupMode, setSetupMode] = useState<SetupMode>('chooser');
 
   useEffect(() => {
     setDraftConfig(normalizeConfig(initialConfig));
   }, [initialConfig]);
 
   useEffect(() => {
-    setSetupMode(isFirstLaunch ? 'chooser' : 'send');
+    setSetupMode('chooser');
     setStatus(null);
     setImportCode('');
   }, [isFirstLaunch]);

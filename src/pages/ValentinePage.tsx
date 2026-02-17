@@ -86,7 +86,7 @@ const ValentinePage: React.FC<ValentinePageProps> = ({
           </button>
         </div>
 
-        <p className="hint-text">You Know What To Pick lol</p>
+        <p className="hint-text">You Know What To Pick</p>
       </div>
     </div>
   );

@@ -76,11 +76,15 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
 
   const noLabelRows = useMemo(
     () =>
-      draftConfig.noLabels.map((label, index) => ({
-        index,
-        rangeLabel: getAttemptRangeLabel(index, draftConfig.maxNoAttempts),
-        value: label,
-      })),
+      draftConfig.noLabels.map((label, index) => {
+        const rangeLabel = getAttemptRangeLabel(index, draftConfig.maxNoAttempts);
+        return {
+          index,
+          rangeLabel,
+          value: label,
+          placeholder: `Label for attempts ${rangeLabel}`,
+        };
+      }),
     [draftConfig.maxNoAttempts, draftConfig.noLabels]
   );
 
@@ -141,49 +145,50 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
 
   return (
     <div className="setup-container">
-      <div className="setup-content">
-        <h1 className="setup-title">Customize Before You Send</h1>
-        <p className="setup-subtitle">
-          Configure the no-button labels and success page text. You can save locally and share this
-          setup with a code.
-        </p>
+      <div className="setup-layout">
+        <div className="setup-customization-panel">
+          <h1 className="setup-title">Customize Before You Send</h1>
+          <p className="setup-subtitle">
+            Configure your no-button behavior and success page text.
+          </p>
 
-        <div className="setup-grid">
-          <section className="setup-section">
-            <h2 className="setup-section-title">No Button Settings</h2>
-            <label className="setup-label" htmlFor="maxNoAttempts">
-              Maximum No Attempts
-            </label>
-            <input
-              id="maxNoAttempts"
-              className="setup-input"
-              type="number"
-              min={MIN_NO_ATTEMPTS}
-              max={MAX_NO_ATTEMPTS}
-              step={NO_LABEL_STEP}
-              value={draftConfig.maxNoAttempts}
-              onChange={(event) => updateMaxAttempts(event.target.value)}
-            />
-            <p className="setup-hint">
-              Attempts are grouped in steps of {NO_LABEL_STEP}, with a hard cap of {MAX_NO_ATTEMPTS}.
-            </p>
+          <div className="setup-grid">
+            <section className="setup-section setup-section-scroll">
+              <h2 className="setup-section-title">No Button Settings</h2>
+              <label className="setup-label" htmlFor="maxNoAttempts">
+                Maximum No Attempts
+              </label>
+              <input
+                id="maxNoAttempts"
+                className="setup-input"
+                type="number"
+                min={MIN_NO_ATTEMPTS}
+                max={MAX_NO_ATTEMPTS}
+                step={NO_LABEL_STEP}
+                value={draftConfig.maxNoAttempts}
+                onChange={(event) => updateMaxAttempts(event.target.value)}
+                placeholder="e.g. 48"
+              />
+              <p className="setup-hint">
+                Attempts are grouped in steps of {NO_LABEL_STEP}, with a hard cap of {MAX_NO_ATTEMPTS}.
+              </p>
 
-            <h3 className="setup-subsection-title">No Button Labels</h3>
-            <div className="setup-no-labels">
-              {noLabelRows.map((row) => (
-                <label key={row.index} className="setup-no-label-row">
-                  <span className="setup-no-label-attempts">Attempts {row.rangeLabel}</span>
-                  <input
-                    className="setup-input"
-                    value={row.value}
-                    onChange={(event) => updateNoLabel(row.index, event.target.value)}
-                  />
-                </label>
-              ))}
-            </div>
-          </section>
+              <h3 className="setup-subsection-title">No Button Labels</h3>
+              <div className="setup-no-labels">
+                {noLabelRows.map((row) => (
+                  <label key={row.index} className="setup-no-label-row">
+                    <span className="setup-no-label-attempts">Attempts {row.rangeLabel}</span>
+                    <input
+                      className="setup-input"
+                      value={row.value}
+                      onChange={(event) => updateNoLabel(row.index, event.target.value)}
+                      placeholder={row.placeholder}
+                    />
+                  </label>
+                ))}
+              </div>
+            </section>
 
-          <div className="setup-column">
             <section className="setup-section">
               <h2 className="setup-section-title">Success Page Text</h2>
               <label className="setup-label" htmlFor="successTitle">
@@ -199,6 +204,7 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
                     successTitle: event.target.value,
                   }))
                 }
+                placeholder="Enter success title"
               />
 
               <label className="setup-label" htmlFor="successMessage">
@@ -214,6 +220,7 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
                     successMessage: event.target.value,
                   }))
                 }
+                placeholder="Enter success message"
               />
 
               <label className="setup-label" htmlFor="successPlaceholderText">
@@ -229,53 +236,56 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
                     successPlaceholderText: event.target.value,
                   }))
                 }
+                placeholder="Enter the longer success page paragraph"
               />
-            </section>
-
-            <section className="setup-section">
-              <h2 className="setup-section-title">Save and Share</h2>
-              <p className="setup-hint setup-send-hint">
-                Keep it simple: copy one message and send it. The receiver can import the code in this
-                same screen.
-              </p>
-              <div className="setup-actions">
-                <button className="setup-button" type="button" onClick={handleCopySendMessage}>
-                  Copy Send Message
-                </button>
-                <button className="setup-button" type="button" onClick={handleCopyShareCode}>
-                  Copy Share Code
-                </button>
-              </div>
-
-              <label className="setup-label" htmlFor="importCode">
-                Import Share Code
-              </label>
-              <textarea
-                id="importCode"
-                className="setup-textarea setup-mono"
-                value={importCode}
-                onChange={(event) => setImportCode(event.target.value)}
-                placeholder="Paste a received share code here"
-              />
-
-              <button className="setup-button" type="button" onClick={handleImportShareCode}>
-                Import Code
-              </button>
             </section>
           </div>
         </div>
 
-        <div className="setup-save-bar">
-          {status && (
-            <p className={`setup-status setup-status-${status.type}`} role="status">
-              {status.message}
+        <aside className="setup-share-panel">
+          <section className="setup-section setup-share-section">
+            <h2 className="setup-section-title">Save and Share</h2>
+            <p className="setup-hint setup-send-hint">
+              Copy one message and send it. Receiver can import the code here.
             </p>
-          )}
 
-          <button className="setup-save-button" type="button" onClick={handleSave}>
-            {isFirstLaunch ? 'Save and Start' : 'Save Changes'}
-          </button>
-        </div>
+            <div className="setup-actions">
+              <button className="setup-button" type="button" onClick={handleCopySendMessage}>
+                Copy Send Message
+              </button>
+              <button className="setup-button" type="button" onClick={handleCopyShareCode}>
+                Copy Share Code
+              </button>
+            </div>
+
+            <label className="setup-label" htmlFor="importCode">
+              Import Share Code
+            </label>
+            <textarea
+              id="importCode"
+              className="setup-textarea setup-mono"
+              value={importCode}
+              onChange={(event) => setImportCode(event.target.value)}
+              placeholder="Paste a received share code here"
+            />
+
+            <button className="setup-button" type="button" onClick={handleImportShareCode}>
+              Import Code
+            </button>
+          </section>
+        </aside>
+      </div>
+
+      <div className="setup-save-dock">
+        {status && (
+          <p className={`setup-status setup-status-${status.type}`} role="status">
+            {status.message}
+          </p>
+        )}
+
+        <button className="setup-save-button setup-save-dock-button" type="button" onClick={handleSave}>
+          {isFirstLaunch ? 'Save and Start' : 'Save Changes'}
+        </button>
       </div>
     </div>
   );

@@ -34,7 +34,8 @@ const ValentinePage: React.FC<ValentinePageProps> = ({
       Math.max(0, noLabels.length - 1)
     );
 
-    return noLabels[labelIndex] ?? noLabels[noLabels.length - 1] ?? 'No';
+    const candidateLabel = noLabels[labelIndex] ?? noLabels[noLabels.length - 1] ?? '';
+    return candidateLabel.trim().length > 0 ? candidateLabel : 'No';
   };
 
   const handleYesClick = () => {

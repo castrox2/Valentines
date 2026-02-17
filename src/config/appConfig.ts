@@ -6,25 +6,7 @@ export const DEFAULT_MAX_NO_ATTEMPTS = 48;
 const CONFIG_STORAGE_KEY = 'valentines_app_config_v1';
 const SHARE_CODE_PREFIX = 'VALENTINES_CONFIG:';
 
-const DEFAULT_NO_LABELS = [
-  'No',
-  'tf you doing???',
-  'bro deadass????',
-  'AII BRO WHY U TRYING SO HARD????',
-  'SO YOU WANT ME TO KMS???',
-  'aii f you.',
-  'at this point whyd i even ask',
-  'k whatever bye.',
-  'aight chill bro',
-  'aii bro stop deadass',
-  'im lowkey running out of stuff to say',
-  'it aint even funny no more',
-  'atp just tell me you dont want me',
-  '...',
-  'ur at 42 tries',
-  'aii bruh last one',
-  'max attempts reached',
-] as const;
+const DEFAULT_NO_LABELS: readonly string[] = [];
 
 export interface ValentineAppConfig {
   maxNoAttempts: number;
@@ -34,10 +16,9 @@ export interface ValentineAppConfig {
   successPlaceholderText: string;
 }
 
-const DEFAULT_SUCCESS_TITLE = 'MMMMMMM TYPE SHIIIITTTTT';
-const DEFAULT_SUCCESS_MESSAGE = "Glad you're back safe tho";
-const DEFAULT_SUCCESS_PLACEHOLDER_TEXT =
-  "Anyways I got my gifts lined up for valentines, so just wait. I love you.";
+const DEFAULT_SUCCESS_TITLE = '';
+const DEFAULT_SUCCESS_MESSAGE = '';
+const DEFAULT_SUCCESS_PLACEHOLDER_TEXT = '';
 
 function toFiniteNumber(value: unknown): number | null {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -71,7 +52,7 @@ export function getNoLabelSlotCount(maxNoAttempts: number): number {
 }
 
 function getFallbackNoLabel(index: number): string {
-  return DEFAULT_NO_LABELS[index] ?? `No (${index * NO_LABEL_STEP})`;
+  return DEFAULT_NO_LABELS[index] ?? '';
 }
 
 export function buildNoLabels(

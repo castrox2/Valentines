@@ -24,7 +24,7 @@ Recommended distribution method:
 Direct download page:
 - https://github.com/castrox2/Valentines/releases
 
-## For Developers
+## Developers
 
 ### Requirements
 - Node.js 18+

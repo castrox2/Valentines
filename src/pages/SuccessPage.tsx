@@ -5,12 +5,16 @@ interface SuccessPageProps {
   successTitle: string;
   successMessage: string;
   successPlaceholderText: string;
+  showBackButton?: boolean;
+  onBack?: () => void;
 }
 
 const SuccessPage: React.FC<SuccessPageProps> = ({
   successTitle,
   successMessage,
   successPlaceholderText,
+  showBackButton = false,
+  onBack,
 }) => {
   return (
     <div className="success-container">
@@ -48,6 +52,12 @@ const SuccessPage: React.FC<SuccessPageProps> = ({
           <span className="decorative-heart">{'\u2764\uFE0F'}</span>
           <span className="decorative-heart">{'\uD83D\uDC95'}</span>
         </div>
+
+        {showBackButton && onBack && (
+          <button className="success-back-button" type="button" onClick={onBack}>
+            Back
+          </button>
+        )}
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ import {
 interface SetupPageProps {
   initialConfig: ValentineAppConfig;
   isFirstLaunch: boolean;
-  onSave: (config: ValentineAppConfig) => void;
+  onSave: (config: ValentineAppConfig, mode: 'send' | 'received') => void;
 }
 
 type SetupStatus = {
@@ -162,12 +162,12 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
       return;
     }
 
-    onSave(importedConfig);
+    onSave(importedConfig, 'received');
   };
 
   const handleSave = () => {
     const normalized = normalizeConfig(draftConfig);
-    onSave(normalized);
+    onSave(normalized, 'send');
     setStatus({ type: 'success', message: 'Customization saved.' });
   };
 
@@ -358,20 +358,18 @@ const SetupPage: React.FC<SetupPageProps> = ({ initialConfig, isFirstLaunch, onS
               Share Code
             </label>
             <textarea id="sendShareCode" className="setup-textarea setup-mono" value={shareCode} readOnly />
+
+            {status && (
+              <p className={`setup-status setup-status-${status.type}`} role="status">
+                {status.message}
+              </p>
+            )}
+
+            <button className="setup-save-button setup-save-inline-button" type="button" onClick={handleSave}>
+              {isFirstLaunch ? 'Save and Start' : 'Save Changes'}
+            </button>
           </section>
         </aside>
-      </div>
-
-      <div className="setup-save-dock">
-        {status && (
-          <p className={`setup-status setup-status-${status.type}`} role="status">
-            {status.message}
-          </p>
-        )}
-
-        <button className="setup-save-button setup-save-dock-button" type="button" onClick={handleSave}>
-          {isFirstLaunch ? 'Save and Start' : 'Save Changes'}
-        </button>
       </div>
     </div>
   );

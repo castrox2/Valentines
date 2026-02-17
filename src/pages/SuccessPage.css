@@ -163,6 +163,20 @@
   animation-delay: 0.4s;
 }
 
+.success-back-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.success-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 @media (max-width: 768px) {
   .success-title {
     font-size: 3rem;

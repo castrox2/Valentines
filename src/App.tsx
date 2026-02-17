@@ -1,34 +1,31 @@
-import React, { useMemo, useState } from 'react';
-import {
-  DEFAULT_APP_CONFIG,
-  ValentineAppConfig,
-  loadSavedConfig,
-  saveConfig,
-} from './config/appConfig';
+import React, { useState } from 'react';
+import { DEFAULT_APP_CONFIG, ValentineAppConfig } from './config/appConfig';
 import SetupPage from './pages/SetupPage';
 import ValentinePage from './pages/ValentinePage';
 import SuccessPage from './pages/SuccessPage';
 
 type AppPage = 'setup' | 'valentine' | 'success';
+type SessionMode = 'send' | 'received';
 
 const App: React.FC = () => {
-  const initialSavedConfig = useMemo(() => loadSavedConfig(), []);
+  const [config, setConfig] = useState<ValentineAppConfig>(DEFAULT_APP_CONFIG);
+  const [page, setPage] = useState<AppPage>('setup');
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
+  const [sessionMode, setSessionMode] = useState<SessionMode | null>(null);
 
-  const [config, setConfig] = useState<ValentineAppConfig>(
-    initialSavedConfig ?? DEFAULT_APP_CONFIG
-  );
-  const [page, setPage] = useState<AppPage>(initialSavedConfig ? 'valentine' : 'setup');
-  const [isFirstLaunch, setIsFirstLaunch] = useState(!initialSavedConfig);
-
-  const handleSaveCustomization = (nextConfig: ValentineAppConfig) => {
-    const normalizedConfig = saveConfig(nextConfig);
-    setConfig(normalizedConfig);
+  const handleSaveCustomization = (nextConfig: ValentineAppConfig, mode: SessionMode) => {
+    setConfig(nextConfig);
+    setSessionMode(mode);
     setPage('valentine');
     setIsFirstLaunch(false);
   };
 
   const handleYes = () => {
     setPage('success');
+  };
+
+  const handleBackFromSuccess = () => {
+    setPage('valentine');
   };
 
   const handleOpenCustomization = () => {
@@ -57,6 +54,8 @@ const App: React.FC = () => {
           successTitle={config.successTitle}
           successMessage={config.successMessage}
           successPlaceholderText={config.successPlaceholderText}
+          showBackButton={sessionMode === 'send'}
+          onBack={sessionMode === 'send' ? handleBackFromSuccess : undefined}
         />
       )}
     </div>

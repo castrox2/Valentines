@@ -35,6 +35,7 @@
       "build/**/*",
       "public/electron.js",
       "public/preload.js",
+      "public/heart-icon.ico",
       "package.json"
     ],
     "directories": {
@@ -43,6 +44,7 @@
     },
     "win": {
       "signAndEditExecutable": false,
+      "icon": "public/heart-icon.ico",
       "target": [
         "nsis",
         "portable"

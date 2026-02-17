@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { NO_LABEL_STEP } from '../config/appConfig';
 import './ValentinePage.css';
 
@@ -86,7 +86,7 @@ const ValentinePage: React.FC<ValentinePageProps> = ({
           </button>
         </div>
 
-        <p className="hint-text">I didn't really have to ask but for formalities I GUESS </p>
+        <p className="hint-text">You Know What To Pick lol</p>
       </div>
     </div>
   );
